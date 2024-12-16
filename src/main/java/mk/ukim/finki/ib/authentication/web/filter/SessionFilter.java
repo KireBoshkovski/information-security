@@ -7,7 +7,6 @@ import jakarta.servlet.annotation.WebInitParam;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
 import mk.ukim.finki.ib.authentication.service.SessionService;
 
 import java.io.IOException;
@@ -41,10 +40,8 @@ public class SessionFilter implements Filter {
         String path = req.getServletPath();
         System.out.println("SessionFilter: Checking path = " + path);
 
-
-        if (path.startsWith(ignorePath) || path.startsWith(registerPath)|| path.startsWith("/style") || path.startsWith("/script")) {
+        if (path.startsWith(ignorePath) || path.startsWith(registerPath) || path.startsWith("/style") || path.startsWith("/script")) {
             filterChain.doFilter(request, response);
-            return;
         } else {
             Cookie[] cookieList = req.getCookies();
             if (cookieList != null) {
@@ -52,7 +49,17 @@ public class SessionFilter implements Filter {
                     if (cookie.getName().equals("SESSIONID")) {
                         String sessionToken = cookie.getValue();
                         if (this.sessionService.isSessionValid(sessionToken)) {
-                            filterChain.doFilter(request, response); // Valid session, proceed
+                            if (path.startsWith("/admin")) {
+                                // check if user in session has role ROLE_ADMIN
+                                String role = this.sessionService.checkAuthority(sessionToken);
+                                if (role.equals("ROLE_ADMIN")) {
+                                    filterChain.doFilter(request, response);
+                                } else if (role.equals("ROLE_USER")) {
+                                    resp.sendRedirect("/unauthorized");
+                                    resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                                }
+                            } else
+                                filterChain.doFilter(request, response); // Valid session, proceed
                             return;
                         }
                     }

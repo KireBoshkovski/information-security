@@ -8,6 +8,7 @@ import mk.ukim.finki.ib.authentication.repository.UserRepository;
 import mk.ukim.finki.ib.authentication.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,6 +51,16 @@ public class UserServiceImpl implements UserService {
     public Optional<User> findByUsername(String username) {
 
         return this.userRepository.findByUsername(username);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return this.userRepository.findAll();
+    }
+
+    @Override
+    public void deleteByUsername(String username) {
+        this.userRepository.deleteById(username);
     }
 
 

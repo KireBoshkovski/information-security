@@ -1,0 +1,20 @@
+<html>
+<body>
+<h2>User list:</h2>
+<form th:action="@{'/admin'}" th:method="POST">
+    <ul>
+        <li th:each="user :${users}">
+            <label>
+                <input type="radio" name="user" th:value="${user.getUsername()}">
+
+                Username: <span th:text="${user.getUsername()}"></span> <br>
+                Email: <span th:text="${user.getEmail()}"></span><br>
+                Is valid: <span th:text="${user.isConfirmed()}"></span><br>
+                Role: <span th:text="${user.getRole()}"></span><br>
+            </label>
+        </li>
+    </ul>
+    <button type="submit">Remove selected User</button>
+</form>
+</body>
+</html>

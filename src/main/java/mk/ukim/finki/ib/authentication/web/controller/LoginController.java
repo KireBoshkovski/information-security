@@ -31,7 +31,11 @@ public class LoginController {
     private final EmailService emailService;
 
     @GetMapping
-    public String getLoginPage() {
+    public String getLoginPage(@RequestParam(required = false) String error, Model model) {
+         if (error != null && !error.isEmpty()) {
+            model.addAttribute("hasError", true);
+            model.addAttribute("error", error);
+        }
         return "login";
     }
 

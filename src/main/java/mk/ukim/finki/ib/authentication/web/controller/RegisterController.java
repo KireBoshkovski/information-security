@@ -37,8 +37,7 @@ public class RegisterController {
     }
 
     @PostMapping
-    public String validate(@RequestParam String username, @RequestParam String email, @RequestParam String password,
-                           @RequestParam String repeatedPassword) {
+    public String validate(@RequestParam String username, @RequestParam String email, @RequestParam String password, @RequestParam String repeatedPassword) {
         try {
             this.userService.validate(username, email, password, repeatedPassword);
             return "forward:/register/sendConfirmationEmail";
